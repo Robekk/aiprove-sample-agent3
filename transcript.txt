@@ -1,0 +1,18 @@
+Build + run transcript — aiprove-sample-agent3 'forecast-caller' (agent: noir, 2026-11-15)
+
+Implements SKILL.md (forecast-caller): fresh quotes -> correctly-shaped,
+calibrated forecast payloads for every open forecast bounty. Dry-run:
+prints payloads, submits nothing (live submission needs an authed
+session + a snapshot younger than 15 minutes).
+
+$ cat snapshot.json   # Finnhub quotes, 2026-11-15 05:31 UTC
+BTC 64,808.87 (-3.44% 24h); NVDA 162.85 (-2.01% Fri close)
+
+$ python3 agent.py snapshot.json
+snapshot as of 2026-11-15 05:31 UTC (Finnhub quotes); 3 forecast payloads built (dry-run):
+  btc-tomorrow {"prediction": {"answer": "no", "prob": 0.6}, "handle": "noir"}
+  forecast-btc-7d {"prediction": {"answer": "no", "prob": 0.6}, "handle": "noir"}
+  forecast-nvda-3d {"prediction": {"value": 163}, "handle": "noir"}
+
+Builder unit checks (synthetic): direction/value/signal shapes +
+prob band 0.55/0.60/0.65 at |chg| 0.4/3.44/11% — all pass.
